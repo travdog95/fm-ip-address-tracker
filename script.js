@@ -10,6 +10,7 @@ const timezoneElement = document.querySelector("[data-timezone]");
 const ispElement = document.querySelector("[data-isp]");
 const searchButton = document.querySelector(".icon-container");
 const searchInput = document.querySelector("[data-search-input]");
+const messageElement = document.querySelector("[data-message]");
 
 //Event handlers
 searchButton.addEventListener("click", function (e) {
@@ -33,9 +34,12 @@ const validSearchInput = (searchValue) => {
 };
 
 const searchHandler = (searchValue) => {
+  messageElement.innerHTML = "Retrieving map info...";
+
   getIpGeolocation(searchValue)
     .then((locData) => {
-      console.log(locData);
+      // console.log(locData);
+      messageElement.innerHTML = "";
       mapContainer.innerHTML = `<div id="map" class="map"></div>`;
 
       //Map
@@ -63,6 +67,7 @@ const searchHandler = (searchValue) => {
     })
     .catch((error) => {
       console.log(error);
+      messageElement.innerHTML = error;
     });
 };
 
@@ -71,7 +76,8 @@ const getIpGeolocation = async (address) => {
   const response = await fetch(`${ipifyUrl}?apiKey=${ipifyApiKey}&ipAddress=${address}`);
 
   if (!response.ok) {
-    throw new Error("Could not fetch location!");
+    const errors = await response.json();
+    throw new Error(errors.messages);
   }
 
   const location = await response.json();
