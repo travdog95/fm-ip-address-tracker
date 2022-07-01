@@ -38,7 +38,6 @@ const searchHandler = (searchValue) => {
 
   getIpGeolocation(searchValue)
     .then((locData) => {
-      // console.log(locData);
       messageElement.innerHTML = "";
       mapContainer.innerHTML = `<div id="map" class="map"></div>`;
 
